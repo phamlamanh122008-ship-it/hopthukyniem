@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiệm Kỷ Niệm Retro - Gửi Bí Mật</title>
+    <style>
+        :root {
+            --bg-color: #f4edd8;
+            --box-bg: #fffbf2;
+            --primary: #d66853; 
+            --secondary: #477684;
+            --dark: #2b2d42;
+            --border: 3px solid #2b2d42;
+            --shadow: 5px 5px 0px #2b2d42;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace, Georgia, serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--secondary) 0.5px, transparent 0.5px), radial-gradient(var(--secondary) 0.5px, var(--bg-color) 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: var(--dark);
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--box-bg);
+            padding: 20px 40px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(-0.5deg);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        .editor-section {
+            background: var(--box-bg);
+            padding: 25px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--dark);
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: var(--border);
+            background: #fff;
+            color: var(--dark);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .canvas-tools {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            background: #ede3ce;
+            padding: 8px;
+            border: var(--border);
+        }
+
+        .canvas-tools input[type="color"] {
+            border: 2px solid var(--dark);
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .canvas-tools input[type="range"] {
+            flex: 1;
+            accent-color: var(--primary);
+        }
+
+        .btn-clear {
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--dark);
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .canvas-container {
+            border: var(--border);
+            background: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: crosshair;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border: var(--border);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px var(--dark);
+        }
+
+        .btn-submit:disabled {
+            background: #b2bec3;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translate(3px, 3px);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📻 HỘP THƯ RETRO</h1>
+        <p>Viết và vẽ điều gì đó gửi riêng cho tớ nhé...</p>
+    </header>
+
+    <section class="editor-section">
+        <h2 class="section-title">✍️ GỬI KỶ NIỆM BÍ MẬT</h2>
+        
+        <form id="memoryForm">
+            <div class="input-group">
+                <label for="username">Tên / Biệt danh của bạn:</label>
+                <input type="text" id="username" name="name" required placeholder="Ai đó ghé thăm...">
+            </div>
+
+            <div class="input-group">
+                <label for="message">Lời nhắn gửi:</label>
+                <textarea id="message" name="message" rows="4" required placeholder="Nhập những dòng kỷ niệm vào đây..."></textarea>
+            </div>
+
+            <input type="hidden" id="drawingData" name="drawing_base64">
+
+            <div class="input-group" style="margin-bottom: 5px;">
+                <label>Vẽ nguệch ngoạc tặng tớ:</label>
+            </div>
+            <div class="canvas-tools">
+                <input type="color" id="colorPicker" value="#2b2d42">
+                <input type="range" id="lineWidth" min="1" max="12" value="4">
+                <button type="button" class="btn-clear" onclick="clearCanvas()">XÓA VẼ</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="paintCanvas" width="450" height="260"></canvas>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Gửi Vào Kỷ Niệm 📮</button>
+        </form>
+    </section>
+
+    <script>
+        // TẢI ĐƯỜNG DẪN CỦA BẠN VÀO ĐÂY
+        const GETFORM_URL = https://forminit.com/luubut;
+
+        // --- XỬ LÝ CANVAS (VẼ) ---
+        const canvas = document.getElementById('paintCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const lineWidth = document.getElementById('lineWidth');
+        let painting = false;
+
+        function startPosition(e) { painting = true; draw(e); }
+        function finishedPosition() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if (!painting) return;
+            ctx.lineWidth = lineWidth.value;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = colorPicker.value;
+
+            const rect = canvas.getBoundingClientRect();
+            // Điều chỉnh tỷ lệ kích thước thực tế hiển thị so với độ phân giải canvas
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const x = ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX;
+            const y = ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', finishedPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseleave', finishedPosition);
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e.touches[0]); });
+        canvas.addEventListener('touchend', finishedPosition);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // --- XỬ LÝ GỬI FORM LÊN MẠNG ---
+        document.getElementById('memoryForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Ngăn trang web tải lại theo cách truyền thống
+
+            if (GETFORM_URL.includes("DÁN_ĐƯỜNG_DẪN")) {
+                alert("Lỗi: Chủ nhà chưa cấu hình đường dẫn nhận thư Getform!");
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "ĐANG GỬI BÍ MẬT...";
+
+            // Kiểm tra xem người dùng có vẽ gì không
+            const buffer = document.createElement('canvas');
+            buffer.width = canvas.width; buffer.height = canvas.height;
+            const isCanvasBlank = canvas.toDataURL() === buffer.toDataURL();
+
+            // Nếu có vẽ, nhét chuỗi ảnh vào ô ẩn để gửi đi
+            if (!isCanvasBlank) {
+                document.getElementById('drawingData').value = canvas.toDataURL();
+            } else {
+                document.getElementById('drawingData').value = ""; // Không vẽ gì
+            }
+
+            // Gom tất cả dữ liệu trong form
+            const formData = new FormData(this);
+
+            // Gửi dữ liệu lên hệ thống Getform qua API
+            fetch(GETFORM_URL, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json",
+                }
+            })
+            .then(response => {
+                if(response.ok) {
+                    alert("✨ Kỷ niệm của bạn đã được mã hóa và gửi thẳng tới hòm thư bí mật của chủ nhà thành công!");
+                    // Reset form và xóa khung vẽ
+                    document.getElementById('memoryForm').reset();
+                    clearCanvas();
+                } else {
+                    alert("❌ Có lỗi xảy ra khi gửi. Vui lòng thử lại!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("❌ Lỗi kết nối mạng. Hãy kiểm tra lại internet!");
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Gửi Vào Kỷ Niệm 📮";
+            });
+        });
+    </script>
+</body>
+</html>
